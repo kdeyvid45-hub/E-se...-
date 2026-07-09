@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E Se...?</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#0f0f1a,#1a1a2e);
+color:white;
+text-align:center;
+}
+
+header{
+padding:20px;
+font-size:22px;
+font-weight:bold;
+background:rgba(0,0,0,0.4);
+}
+
+.container{max-width:700px;margin:auto;padding:20px;}
+
+.card{
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:15px;
+margin-top:20px;
+}
+
+button{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:10px;
+background:#6c5ce7;
+color:white;
+cursor:pointer;
+}
+
+button:hover{background:#a29bfe;}
+
+textarea{
+width:100%;
+height:80px;
+border-radius:10px;
+border:none;
+padding:10px;
+margin-top:10px;
+}
+
+.response{
+background:rgba(255,255,255,0.08);
+padding:10px;
+margin-top:10px;
+border-radius:10px;
+text-align:left;
+}
+
+.like{
+float:right;
+cursor:pointer;
+color:#00ffcc;
+}
+
+.small{
+font-size:12px;
+opacity:0.7;
+}
+</style>
+</head>
+
+<body>
+
+<header>🤔 E Se...?</header>
+
+<div class="container">
+
+<div class="card">
+<div id="question" style="font-size:20px"></div>
+
+<button onclick="newQuestion()">🔄 Outra pergunta</button>
+<button onclick="toggleAnswer()">💬 Responder</button>
+<button onclick="showRank()">🏆 Ranking</button>
+
+<div id="answerBox" style="display:none;">
+<textarea id="answerText" placeholder="Escreva sua resposta..."></textarea>
+<button onclick="sendAnswer()">Enviar</button>
+</div>
+</div>
+
+<div class="card" id="answersBox">
+<h3>💬 Respostas</h3>
+<div id="answers"></div>
+</div>
+
+<div class="card" id="rankBox" style="display:none;">
+<h3>🏆 Ranking</h3>
+<div id="rank"></div>
+</div>
+
+</div>
+
+<script>
+const questions = [
+"E se ninguém precisasse dormir?",
+"E se a Terra tivesse dois sóis?",
+"E se os animais falassem?",
+"E se você pudesse voltar no tempo?",
+"E se dinheiro não existisse?",
+"E se todos lessem pensamentos?",
+"E se a internet sumisse amanhã?",
+"E se você pudesse voar?",
+"E se o Brasil dominasse o mundo?",
+"E se existisse vida em Marte?",
+"E se o tempo parasse?",
+"E se você fosse imortal?",
+"E se sonhos fossem reais?",
+"E se você pudesse pausar o mundo?",
+"E se cada pessoa tivesse um clone?",
+"E se a Lua desaparecesse?",
+"E se ninguém pudesse mentir?",
+"E se você tivesse 1 desejo infinito?",
+"E se a gravidade falhasse?",
+"E se robôs controlassem a Terra?",
+"E se você acordasse no passado?",
+"E se todo mundo trocasse de corpo?",
+"E se a comida nunca acabasse?",
+"E se existisse outra dimensão?",
+"E se você fosse o último humano?"
+];
+
+let current = "";
+
+function newQuestion(){
+current = questions[Math.floor(Math.random()*questions.length)];
+document.getElementById("question").innerText = current;
+load();
+}
+
+function toggleAnswer(){
+let box = document.getElementById("answerBox");
+box.style.display = box.style.display=="none"?"block":"none";
+}
+
+function sendAnswer(){
+let text = document.getElementById("answerText").value;
+if(!text) return;
+
+let data = JSON.parse(localStorage.getItem(current))||[];
+data.push({text:text,likes:0});
+localStorage.setItem(current,JSON.stringify(data));
+
+document.getElementById("answerText").value="";
+load();
+}
+
+function load(){
+let data = JSON.parse(localStorage.getItem(current))||[];
+let html="";
+
+data.forEach((a,i)=>{
+html+=`
+<div class="response">
+${a.text}
+<span class="like" onclick="like(${i})">👍 ${a.likes}</span>
+</div>
+`;
+});
+
+document.getElementById("answers").innerHTML =
+html||"Nenhuma resposta ainda.";
+}
+
+function like(i){
+let data = JSON.parse(localStorage.getItem(current))||[];
+data[i].likes++;
+localStorage.setItem(current,JSON.stringify(data));
+load();
+}
+
+function showRank(){
+let all=[];
+for(let i=0;i<localStorage.length;i++){
+let key=localStorage.key(i);
+let arr=JSON.parse(localStorage.getItem(key));
+if(Array.isArray(arr)){
+arr.forEach(a=>{
+all.push({q:key,text:a.text,likes:a.likes});
+});
+}
+}
+
+all.sort((a,b)=>b.likes-a.likes);
+
+let html="";
+all.slice(0,10).forEach(a=>{
+html+=`<div class="response">
+<b>${a.q}</b><br>
+${a.text}<br>
+👍 ${a.likes}
+</div>`;
+});
+
+document.getElementById("rank").innerHTML=html||"Sem ranking ainda.";
+
+document.getElementById("rankBox").style.display="block";
+document.getElementById("answersBox").style.display="none";
+}
+
+newQuestion();
+</script>
+
+</body>
+</html>
