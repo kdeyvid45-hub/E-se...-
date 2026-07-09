@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>E Se...?</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <h1>🤔 E Se...?</h1>
+    <p>Responda perguntas que fazem você pensar diferente</p>
+  </header>
+
+  <main>
+
+    <div class="card">
+      <h2 id="pergunta">E se você pudesse viver em qualquer planeta?</h2>
+
+      <textarea id="resposta" placeholder="Escreva sua resposta..."></textarea>
+
+      <button onclick="enviarResposta()">Enviar resposta</button>
+      <button onclick="novaPergunta()">Outra pergunta</button>
+    </div>
+
+    <section>
+      <h3>💬 Respostas</h3>
+      <ul id="listaRespostas"></ul>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Projeto escolar - E Se...?</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
